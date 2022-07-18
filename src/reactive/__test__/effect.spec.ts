@@ -1,4 +1,4 @@
-import {effect} from "../effect";
+import {effect, stop} from "../effect";
 import {reactive} from "../reactive";
 
 describe('effect', function () {
@@ -37,7 +37,7 @@ describe('effect', function () {
     expect(num).toBe(3)
   });
 
-  it('scheduler', () => {
+  it('event: scheduler', () => {
     // 1.effect调用时会执行一次fn
     // 2.依赖变化时会执行scheduler,而不是fn
     // 3.调用effect返回的run方法才会执行fn
@@ -61,5 +61,36 @@ describe('effect', function () {
     // 调用effect返回的run方法时,才会调用fn回调
     run()
     expect(dummy).toBe(2)
+  })
+
+  it('stop', () => {
+    let dummy
+    const obj = reactive({prop: 1})
+    const runner = effect(() => {
+      dummy = obj.prop
+    })
+    obj.prop = 2
+    expect(dummy).toBe(2)
+    // 调用 stop 停止副作用
+    stop(runner)
+    obj.prop = 3
+    expect(dummy).toBe(2)
+
+    // 调用runner重新触发副作用
+    runner()
+    expect(dummy).toBe(3)
+    obj.prop = 4
+    expect(dummy).toBe(4)
+  })
+
+  it('events: onStop', () => {
+    const onStop = jest.fn()
+    const runner = effect(() => {
+    }, {
+      onStop
+    })
+    // 调用stop方法,onStop也会被调用一次
+    stop(runner)
+    expect(onStop).toHaveBeenCalled()
   })
 });
