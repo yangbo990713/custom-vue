@@ -1,5 +1,5 @@
 import {toSum} from "../index";
 
-it('init', function () {
+it('test', function () {
   expect(toSum(1, 1)).toBe(2)
 });
