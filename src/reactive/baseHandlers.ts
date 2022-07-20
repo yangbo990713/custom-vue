@@ -4,8 +4,16 @@ const get = createGetter()
 const set = createSetter()
 const readonlyGet = createGetter(true)
 
+export enum ReactiveFlags {
+  IS_REACTIVE = '__v_isReactive',
+  IS_READONLY = '__v_isReadonly',
+}
+
 function createGetter(isReadonly: boolean = false) {
   return function get(target: any, key: string | symbol) {
+    // 可读对象非响应式对象
+    if (key === ReactiveFlags.IS_REACTIVE) return !isReadonly
+    if (key === ReactiveFlags.IS_READONLY) return isReadonly
     const res = Reflect.get(target, key)
     if (!isReadonly) {
       track(target, key)
