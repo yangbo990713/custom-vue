@@ -1,3 +1,7 @@
+// 当前的更新函数
+let activeEffect: ReactiveEffect
+let shouldTrack: Boolean
+
 class ReactiveEffect {
   private readonly fn: Function;
   onStop?: () => void
@@ -10,7 +14,12 @@ class ReactiveEffect {
   }
 
   run() {
-    return this.fn()
+    if (!this.active) return this.fn()
+    shouldTrack = true
+    activeEffect = this
+    const result = this.fn()
+    shouldTrack = false
+    return result
   }
 
   stop() {
@@ -25,17 +34,15 @@ class ReactiveEffect {
   }
 }
 
-// 当前的更新函数
-let activeEffect: ReactiveEffect
 
 export function effect(fn: Function, options: any = {}) {
   // 实例化一个ReactiveEffect类,保存回调函数
-  activeEffect = new ReactiveEffect(fn, options.scheduler)
-  Object.assign(activeEffect, options)
+  const _effect = new ReactiveEffect(fn, options.scheduler)
+  Object.assign(_effect, options)
   // 立刻执行一次
-  activeEffect.run()
-  const runner: any = activeEffect.run.bind(activeEffect)
-  runner._effect = activeEffect
+  _effect.run()
+  const runner: any = _effect.run.bind(_effect)
+  runner._effect = _effect
   return runner
 }
 
@@ -49,7 +56,6 @@ const depMap = new Map()
  */
 export function track(target: object, key: string | symbol) {
   // target -> key -> deps
-
   // 从depMap中取出target对应的数据
   let targetMap = depMap.get(target)
   if (!targetMap) {
@@ -64,7 +70,7 @@ export function track(target: object, key: string | symbol) {
     targetMap.set(key, deps)
   }
 
-  if (!activeEffect) return;
+  if (!shouldTrack || !activeEffect) return;
   // 把当前更新方法添加到 key 对应的 依赖set 中
   deps.add(activeEffect)
   activeEffect.deps.push(deps)

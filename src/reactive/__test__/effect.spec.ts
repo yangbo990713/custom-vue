@@ -73,14 +73,13 @@ describe('effect', function () {
     expect(dummy).toBe(2)
     // 调用 stop 停止副作用
     stop(runner)
-    obj.prop = 3
+    // obj.prop = 3
+    obj.prop++
     expect(dummy).toBe(2)
 
     // 调用runner重新触发副作用
     runner()
     expect(dummy).toBe(3)
-    obj.prop = 4
-    expect(dummy).toBe(4)
   })
 
   it('events: onStop', () => {
