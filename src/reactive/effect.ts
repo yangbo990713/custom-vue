@@ -1,4 +1,6 @@
 // 当前的更新函数
+import {extend} from "../shared";
+
 let activeEffect: ReactiveEffect
 let shouldTrack: Boolean
 
@@ -38,7 +40,7 @@ class ReactiveEffect {
 export function effect(fn: Function, options: any = {}) {
   // 实例化一个ReactiveEffect类,保存回调函数
   const _effect = new ReactiveEffect(fn, options.scheduler)
-  Object.assign(_effect, options)
+  extend(_effect, options)
   // 立刻执行一次
   _effect.run()
   const runner: any = _effect.run.bind(_effect)

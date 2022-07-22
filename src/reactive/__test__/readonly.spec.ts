@@ -1,4 +1,4 @@
-import {isReadonly, readonly} from "../readonly";
+import {isReadonly, readonly, shallowReadonly} from "../readonly";
 
 it('readonly', function () {
   console.warn = jest.fn()
@@ -21,7 +21,7 @@ it('isReadonly', function () {
 
 it('deepIsReadonly', function () {
   const user = {
-    age: 10,
+    name: '小明',
     wife: {name: '小红'},
     car: [{name: '奔驰'}]
   }
@@ -32,4 +32,24 @@ it('deepIsReadonly', function () {
   expect(isReadonly(proxy.car)).toBe(true)
 
   expect(isReadonly(proxy.car[0])).toBe(true)
+});
+
+it('shallowReadonly', function () {
+  const user = {
+    name: '小明',
+    wife: {name: '小红'},
+    car: [{name: '奔驰'}]
+  }
+  const proxy = shallowReadonly(user)
+
+  expect(isReadonly(proxy)).toBe(true)
+
+  proxy.name = '小华'
+  expect(proxy.name).toBe('小明')
+
+  expect(isReadonly(proxy.wife)).toBe(false)
+
+  expect(isReadonly(proxy.car)).toBe(false)
+
+  expect(isReadonly(proxy.car[0])).toBe(false)
 });
