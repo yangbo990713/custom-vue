@@ -1,4 +1,7 @@
 import {notify, track} from "./effect";
+import {reactive} from "./reactive";
+import {readonly} from "./readonly";
+import {isObject} from "../shared";
 
 const get = createGetter()
 const set = createSetter()
@@ -10,11 +13,13 @@ export enum ReactiveFlags {
 }
 
 function createGetter(isReadonly: boolean = false) {
-  return function get(target: any, key: string | symbol) {
+  return function get(target: any, key: string | symbol): any {
     // 可读对象非响应式对象
     if (key === ReactiveFlags.IS_REACTIVE) return !isReadonly
     if (key === ReactiveFlags.IS_READONLY) return isReadonly
-    const res = Reflect.get(target, key)
+    const res: any = Reflect.get(target, key)
+    // 实现对象嵌套
+    if (isObject(res)) return isReadonly ? readonly(res) : reactive(res)
     if (!isReadonly) {
       track(target, key)
     }

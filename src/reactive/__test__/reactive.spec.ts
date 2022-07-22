@@ -1,4 +1,4 @@
-import {isReadonly, isReactive, reactive, readonly} from "../reactive";
+import {isReactive, reactive} from "../reactive";
 
 it('reactive', function () {
 
@@ -20,21 +20,17 @@ it('isReactive', function () {
   expect(isReactive(obj)).toBe(false);
 });
 
-it('readonly', function () {
-  console.warn = jest.fn()
-  const user: object = {age: 10}
-  const proxy = readonly(user)
+it('deepIsReactive', function () {
+  const user = {
+    age: 10,
+    wife: {name: '小红'},
+    car: [{name: '奔驰'}]
+  }
+  const proxy = reactive(user)
 
-  expect(user).not.toBe(proxy)
+  expect(isReactive(proxy.wife)).toBe(true)
 
-  proxy.age++
-  expect(proxy.age).toBe(10)
-  expect(console.warn).toHaveBeenCalled()
-});
+  expect(isReactive(proxy.car)).toBe(true)
 
-it('isReadonly', function () {
-  const obj = {age: 10}
-  const readonlyObj = readonly(obj)
-  expect(isReadonly(readonlyObj)).toBe(true);
-  expect(isReadonly(obj)).toBe(false);
+  expect(isReactive(proxy.car[0])).toBe(true)
 });
