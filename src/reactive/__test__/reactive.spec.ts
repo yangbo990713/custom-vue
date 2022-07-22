@@ -1,4 +1,4 @@
-import {isReactive, reactive} from "../reactive";
+import {isProxy, isReactive, reactive} from "../reactive";
 
 it('reactive', function () {
 
@@ -6,6 +6,8 @@ it('reactive', function () {
   const proxy = reactive(user)
 
   expect(user).not.toBe(proxy)
+
+  expect(isProxy(proxy)).toBe(true)
 
   expect(user.age).toBe(10)
 

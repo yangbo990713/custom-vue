@@ -1,4 +1,5 @@
 import {isReadonly, readonly, shallowReadonly} from "../readonly";
+import {isProxy} from "../reactive";
 
 it('readonly', function () {
   console.warn = jest.fn()
@@ -6,6 +7,8 @@ it('readonly', function () {
   const proxy = readonly(user)
 
   expect(user).not.toBe(proxy)
+
+  expect(isProxy(proxy)).toBe(true)
 
   proxy.age++
   expect(proxy.age).toBe(10)
