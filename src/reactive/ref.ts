@@ -6,6 +6,7 @@ class RefImpl {
   private _value: any;
   private readonly dep: Set<ReactiveEffect> = new Set();
   private _rawValue: any;
+  public __v_isRef: boolean = true
 
   constructor(value: any) {
     this._value = convert(value)
@@ -37,4 +38,20 @@ export function ref(value: any) {
  */
 function convert(value: any) {
   return isObject(value) ? reactive(value) : value
+}
+
+/**
+ * 判断一个值是否为ref
+ * @param val 值
+ */
+export function isRef(val: any): boolean {
+  return Boolean(val.__v_isRef)
+}
+
+/**
+ * 对一个值进行ref解构,如果是ref则返回其value,如果不是则原样返回
+ * @param val 值
+ */
+export function unRef(val: RefImpl | any): boolean {
+  return isRef(val) ? val.value : val
 }
