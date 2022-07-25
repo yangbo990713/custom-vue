@@ -4,7 +4,7 @@ import {extend} from "../shared";
 let activeEffect: ReactiveEffect
 let shouldTrack: Boolean
 
-class ReactiveEffect {
+export class ReactiveEffect {
   private readonly fn: Function;
   onStop?: () => void
   deps: Array<Set<ReactiveEffect>> = []
@@ -49,7 +49,7 @@ export function effect(fn: Function, options: any = {}) {
 }
 
 // 所有的被收集的数据,以及它们的更新方法
-const depMap = new Map()
+const targetMap = new WeakMap()
 
 /**
  * 收集依赖
@@ -57,23 +57,31 @@ const depMap = new Map()
  * @param key 目标key
  */
 export function track(target: object, key: string | symbol) {
+  if (!isTracking()) return
   // target -> key -> deps
   // 从depMap中取出target对应的数据
-  let targetMap = depMap.get(target)
-  if (!targetMap) {
-    targetMap = new Map()
-    depMap.set(target, targetMap)
+  let depsMap = targetMap.get(target)
+  if (!depsMap) {
+    depsMap = new Map()
+    targetMap.set(target, depsMap)
   }
 
   // 取出target中key对应的更新方法
-  let deps = targetMap.get(key)
+  let deps = depsMap.get(key)
   if (!deps) {
     deps = new Set()
-    targetMap.set(key, deps)
+    depsMap.set(key, deps)
   }
 
-  if (!shouldTrack || !activeEffect) return;
   // 把当前更新方法添加到 key 对应的 依赖set 中
+  trackEffect(deps)
+}
+
+/**
+ * 收集依赖
+ * @param deps
+ */
+export function trackEffect(deps: Set<ReactiveEffect>) {
   deps.add(activeEffect)
   activeEffect.deps.push(deps)
 }
@@ -83,11 +91,20 @@ export function track(target: object, key: string | symbol) {
  * @param target 目标对象
  * @param key 目标key
  */
-export function notify(target: object, key: string | symbol) {
+export function trigger(target: object, key: string | symbol) {
   // 以下两步 为 取出key对应的 更新方法数组
-  let targetMap = depMap.get(target)
-  let deps = targetMap.get(key)
-  // 挨个调用更新方法
+  let depsMap = targetMap.get(target)
+  if (!depsMap) return;
+  let deps = depsMap.get(key)
+  // 更新
+  triggerEffect(deps)
+}
+
+/**
+ * 通知更新
+ * @param deps 依赖
+ */
+export function triggerEffect(deps: Set<ReactiveEffect>) {
   for (const depItem of deps) {
     if (depItem.scheduler) {
       depItem.scheduler()
@@ -103,4 +120,11 @@ export function notify(target: object, key: string | symbol) {
  */
 export function stop(runner: any) {
   runner._effect.stop()
+}
+
+/**
+ * 当前是否应该收集依赖
+ */
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
 }

@@ -1,4 +1,4 @@
-import {notify, track} from "./effect";
+import {trigger, track} from "./effect";
 import {reactive} from "./reactive";
 import {readonly} from "./readonly";
 import {extend, isObject} from "../shared";
@@ -36,7 +36,7 @@ function createSetter() {
   return function set(target: any, key: string | symbol, value: any, receiver: any): boolean {
     const res = Reflect.set(target, key, value, receiver)
     // 通知更新
-    notify(target, key);
+    trigger(target, key);
     return res
   }
 }
