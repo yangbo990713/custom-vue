@@ -55,3 +55,23 @@ export function isRef(val: any): boolean {
 export function unRef(val: RefImpl | any): boolean {
   return isRef(val) ? val.value : val
 }
+
+/**
+ * 对一个对象进行代理,如果内部有ref则自动结构
+ * @param objectWithRef 目标对象
+ */
+export function proxyRefs(objectWithRef: object) {
+  return new Proxy(objectWithRef, {
+    get(target: any, key: string | symbol): any {
+      return unRef(Reflect.get(target, key))
+    },
+    set(target: any, key: string | symbol, value: any): boolean {
+      // 先获取目标
+      const res = Reflect.get(target, key)
+      // 如果目标是 ref 且 新值不为ref 则设置其 .value
+      if (isRef(res) && !isRef(value)) res.value = value
+      // 否则直接赋值
+      return Reflect.set(target, key, value)
+    }
+  })
+}

@@ -1,4 +1,4 @@
-import {isRef, ref, unRef} from "../ref";
+import {isRef, proxyRefs, ref, unRef} from "../ref";
 import {effect} from "../effect";
 import {reactive} from "../reactive";
 
@@ -54,5 +54,20 @@ describe('ref', function () {
   it('unRef API', function () {
     const count = ref(1)
     expect(unRef(count)).toBe(1)
+  });
+
+  it('proxyRefs API', function () {
+    const user = {
+      age: ref(10),
+      name: 'tom'
+    }
+    const res = proxyRefs(user)
+    expect(res.age).toBe(10);
+    expect(res.name).toBe('tom');
+    expect(user.age.value).toBe(10);
+
+    res.age = ref(11)
+    expect(res.age).toBe(11);
+    expect(user.age.value).toBe(11);
   });
 });
