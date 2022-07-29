@@ -9,10 +9,11 @@ export class ReactiveEffect {
   onStop?: () => void
   deps: Array<Set<ReactiveEffect>> = []
   active: Boolean = true
+  public _scheduler: Function | undefined;
 
-  constructor(fn: Function, public scheduler?: Function | undefined) {
+  constructor(fn: Function, scheduler?: Function | undefined) {
     this.fn = fn
-    this.scheduler = scheduler
+    this._scheduler = scheduler
   }
 
   run() {
@@ -106,8 +107,8 @@ export function trigger(target: object, key: string | symbol) {
  */
 export function triggerEffect(deps: Set<ReactiveEffect>) {
   for (const depItem of deps) {
-    if (depItem.scheduler) {
-      depItem.scheduler()
+    if (depItem._scheduler) {
+      depItem._scheduler()
     } else {
       depItem.run()
     }
