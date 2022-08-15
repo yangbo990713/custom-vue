@@ -1,4 +1,5 @@
 import App from "./App.js";
-import {createApp} from "../../lib/createApp.js";
+import {createApp} from "../../lib/custom-vue-esm.js";
 
-createApp(App).mount("#app")
+const rootContainer = document.getElementById('#app')
+createApp(App).mount(rootContainer)
