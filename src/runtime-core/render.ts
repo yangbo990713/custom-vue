@@ -1,4 +1,6 @@
 import {createComponentInstance, setupComponent} from "./component";
+// @ts-ignore
+import {isObject} from "../shared/index.ts";
 
 /**
  * 渲染函数
@@ -10,23 +12,51 @@ export function render(vNode: any, container: any) {
   patch(vNode, container)
 }
 
-
 function patch(vNode: any, container: any) {
-  // todo 处理 element
-  processComponent(vNode,container)
+  if (typeof vNode.type === 'string') {
+    // 处理element
+    processElement(vNode, container)
+  } else if (isObject(vNode.type)) {
+    // 处理组件
+    processComponent(vNode, container)
+  }
+}
+
+function processElement(vNode: any, container: any) {
+  mountElement(vNode, container)
+}
+
+function mountElement(vNode: any, container: any) {
+  const {props, children, type} = vNode
+  const el = document.createElement(type)
+  if (typeof children === 'string') {
+    el.textContent = children
+  } else if (Array.isArray(children)) {
+    // 判断是否有多个children 从而进行递归
+    mountChildren(vNode, el)
+  }
+
+  for (const propsKey in props) {
+    el.setAttribute(propsKey, props[propsKey])
+  }
+  container.append(el)
+}
+
+function mountChildren(vNode: any, container: any) {
+  vNode.children.forEach((item: any) => patch(item, container))
 }
 
 function processComponent(vNode: any, container: any) {
-  mountComponent(vNode,container)
+  mountComponent(vNode, container)
 }
 
-function mountComponent(vNode: any,container: any) {
+function mountComponent(vNode: any, container: any) {
   const instance = createComponentInstance(vNode)
   setupComponent(instance)
-  setupRenderEffect(instance,container)
+  setupRenderEffect(instance, container)
 }
 
-function setupRenderEffect(instance: any,container: any) {
+function setupRenderEffect(instance: any, container: any) {
   const subTree = instance.render()
-  patch(subTree,container)
+  patch(subTree, container)
 }
