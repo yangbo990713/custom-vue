@@ -40,8 +40,15 @@ function mountElement(vNode: any, container: any) {
     mountChildren(vNode, el)
   }
 
+  const isEvent = (event:string)=> /^on[A-Z]/.test(event)
+
   for (const propsKey in props) {
-    el.setAttribute(propsKey, props[propsKey])
+    if (isEvent(propsKey)) {
+      const eventName = propsKey.slice(2).toLowerCase()
+      el.addEventListener(eventName, props[propsKey])
+    } else {
+      el.setAttribute(propsKey, props[propsKey])
+    }
   }
   container.append(el)
 }
