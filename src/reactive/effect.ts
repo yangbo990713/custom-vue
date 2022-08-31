@@ -1,5 +1,5 @@
 // 当前的更新函数
-import {extend} from "../shared";
+import {extend} from "../shared/index";
 
 let activeEffect: ReactiveEffect
 let shouldTrack: Boolean

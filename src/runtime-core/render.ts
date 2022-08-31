@@ -1,6 +1,6 @@
 import {createComponentInstance, setupComponent} from "./component";
 // @ts-ignore
-import {isObject} from "../shared";
+import {isObject} from "../shared/index";
 import {ShapeFlags} from "../shared/ShapeFlags";
 
 /**
@@ -34,7 +34,6 @@ function mountElement(vNode: any, container: any) {
 
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children
-    console.log('Galaxy', children)
   } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
     // 判断是否有多个children 从而进行递归
     mountChildren(vNode, el)
