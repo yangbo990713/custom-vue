@@ -1,13 +1,17 @@
 import {publicInstanceProxyHandlers} from "./componentPublicInstance";
 import {initProps} from "./componentProps";
 import {shallowReadonly} from "../reactive/readonly";
+import {emit} from "./componentEmit";
 
 export function createComponentInstance(vNode: any) {
-  return {
+  const component = {
     vNode,
     type: vNode.type,
-    proxy: {}
+    proxy: {},
+    emit: () => {}
   }
+  component.emit = emit.bind(null, component) as any
+  return component
 }
 
 export function setupComponent(instance: any) {
@@ -26,7 +30,7 @@ function setupStatefulComponent(instance: any) {
   if (typeof setup === 'function') {
     // setup可以返回对象(响应式数据)或函数(渲染函数)
     // setup时传递props,且props是“浅只读”的
-    const setupResult = setup(shallowReadonly(instance.props))
+    const setupResult = setup(shallowReadonly(instance.props), {emit: instance.emit})
     handleSetupResult(instance, setupResult)
   }
 }
