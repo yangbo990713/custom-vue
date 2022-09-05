@@ -1,22 +1,15 @@
 import {h} from "../../lib/custom-vue-esm.js";
 
 export default {
-  setup(props, {emit}) {
+  setup(props) {
     // props是只读的
     console.log('Galaxy', props)
     props.count++
 
-    const addFn = () => {
-      emit('add', 1, 2)
-      emit('add-foo')
-    }
-    return {addFn}
+    return {}
   },
   render() {
     const Foo = h('div', {}, `Foo:${this.count}`)
-    const BtnAdd = h('button', {
-      onClick: this.addFn
-    }, '按钮')
-    return h('div', {}, [Foo, BtnAdd])
+    return h('div', {}, Foo)
   }
 }
