@@ -1,7 +1,8 @@
 import {hasOwn} from "../shared/index";
 
 const publicPropertiesMap: any = {
-  $el: (i: any) => i.vNode.el
+  $el: (i: any) => i.vNode.el,
+  $slots: (i: any) => i.slots,
 }
 export const publicInstanceProxyHandlers = {
   get({_: instance}: any, key: string | symbol): any {

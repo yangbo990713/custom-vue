@@ -2,6 +2,7 @@ import {publicInstanceProxyHandlers} from "./componentPublicInstance";
 import {initProps} from "./componentProps";
 import {shallowReadonly} from "../reactive/readonly";
 import {emit} from "./componentEmit";
+import {initSlots} from "./componentSlots";
 
 export function createComponentInstance(vNode: any) {
   const component = {
@@ -15,9 +16,10 @@ export function createComponentInstance(vNode: any) {
 }
 
 export function setupComponent(instance: any) {
-  // todo 处理slots
   initProps(instance, instance.vNode.props)
-  // init component
+
+  initSlots(instance,instance.vNode.children)
+
   setupStatefulComponent(instance)
 }
 
