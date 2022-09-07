@@ -7,7 +7,11 @@ export default {
   },
   render() {
     const App = h('div', {}, 'App组件')
-    const FooCom = h(Foo, {}, [h('p', {}, '这里是Foo组件的slot')])
+
+    const FooCom = h(Foo, {}, {
+      header: [h('p', {}, '这里是Foo组件的header1'), h('p', {}, '这里是Foo组件的header2')],
+      footer: h('p', {}, '这里是Foo组件的slot2')
+    })
 
     return h('div', {}, [App, FooCom])
   },
