@@ -1,6 +1,7 @@
 import {ShapeFlags} from "../shared/ShapeFlags";
 
 export const Fragment = Symbol('Fragment')
+export const Text = Symbol('Text')
 
 /**
  * 创建一个虚拟节点
@@ -25,7 +26,6 @@ export function createVNode(type: any, props?: any, children?: any) {
 
   // 组件+children
   if (vNode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    console.log('Galaxy', children)
     if (typeof children === 'object') {
       vNode.shapeFlag |= ShapeFlags.SLOT_CHILDREN
     }
@@ -36,4 +36,9 @@ export function createVNode(type: any, props?: any, children?: any) {
 
 function getShapeFlag(type: any) {
   return typeof type === 'string' ? ShapeFlags.ELEMENT : ShapeFlags.STATEFUL_COMPONENT
+}
+
+
+export function createTextVNode(text: string) {
+  return createVNode(Text, {}, text)
 }

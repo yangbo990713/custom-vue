@@ -1,4 +1,4 @@
-import {h} from "../../lib/custom-vue-esm.js";
+import {h, createTextVNode} from "../../lib/custom-vue-esm.js";
 import Foo from "./Foo.js";
 
 export default {
@@ -9,8 +9,8 @@ export default {
     const App = h('div', {}, 'App组件')
 
     const FooCom = h(Foo, {}, {
-      header: ({name}) => [h('p', {}, `这里是Foo组件的header1 ${name}`), h('p', {}, '这里是Foo组件的header2')],
-      footer: () => h('p', {}, '这里是Foo组件的slot2')
+      header: ({name}) => [h('p', {}, `这里是Foo组件的header1 ${name}`), createTextVNode('这里是Text节点')],
+      footer: () => h('p', {}, '这里是Foo组件的footer1')
     })
 
     return h('div', {}, [App, FooCom])

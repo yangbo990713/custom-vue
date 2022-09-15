@@ -2,7 +2,7 @@ import {createComponentInstance, setupComponent} from "./component";
 // @ts-ignore
 import {isObject} from "../shared/index";
 import {ShapeFlags} from "../shared/ShapeFlags";
-import {Fragment} from "./vNode";
+import {Fragment, Text} from "./vNode";
 
 /**
  * 渲染函数
@@ -20,6 +20,9 @@ function patch(vNode: any, container: any) {
     case Fragment:
       processFragment(vNode, container)
       break
+    case Text:
+      processText(vNode, container)
+      break
     default:
       if (shapeFlag & ShapeFlags.ELEMENT) {
         // 处理element
@@ -34,6 +37,12 @@ function patch(vNode: any, container: any) {
 
 function processFragment(vNode: any, container: any) {
   mountChildren(vNode, container)
+}
+
+function processText(vNode: any, container: any) {
+  const {children} = vNode
+  const textNode = vNode.el = document.createTextNode(children)
+  container.append(textNode)
 }
 
 
