@@ -21,6 +21,14 @@ export function createVNode(type: any, props?: any, children?: any) {
     vNode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN
   }
 
+  // 组件+children
+  if (vNode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+    console.log('Galaxy', children)
+    if (typeof children === 'object') {
+      vNode.shapeFlag |= ShapeFlags.SLOT_CHILDREN
+    }
+  }
+
   return vNode
 }
 

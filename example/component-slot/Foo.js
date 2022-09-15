@@ -10,8 +10,10 @@ export default {
     console.log('Galaxy', this.$slots)
     // 1.获取到要渲染的元素
     // 2.获取到要渲染的位置
+    // 3.实现作用域插槽
+    const name = 'tom'
     return h('div', {}, [
-      renderSlots(this.$slots, 'header'),
+      renderSlots(this.$slots, 'header', {name}),
       Foo,
       renderSlots(this.$slots, 'footer')
     ])
