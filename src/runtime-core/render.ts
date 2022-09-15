@@ -2,6 +2,7 @@ import {createComponentInstance, setupComponent} from "./component";
 // @ts-ignore
 import {isObject} from "../shared/index";
 import {ShapeFlags} from "../shared/ShapeFlags";
+import {Fragment} from "./vNode";
 
 /**
  * 渲染函数
@@ -14,15 +15,27 @@ export function render(vNode: any, container: any) {
 }
 
 function patch(vNode: any, container: any) {
-  const {shapeFlag} = vNode
-  if (shapeFlag & ShapeFlags.ELEMENT) {
-    // 处理element
-    processElement(vNode, container)
-  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    // 处理组件
-    processComponent(vNode, container)
+  const {shapeFlag, type} = vNode
+  switch (type) {
+    case Fragment:
+      processFragment(vNode, container)
+      break
+    default:
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        // 处理element
+        processElement(vNode, container)
+      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        // 处理组件
+        processComponent(vNode, container)
+      }
+      break
   }
 }
+
+function processFragment(vNode: any, container: any) {
+  mountChildren(vNode, container)
+}
+
 
 function processElement(vNode: any, container: any) {
   mountElement(vNode, container)
@@ -39,7 +52,7 @@ function mountElement(vNode: any, container: any) {
     mountChildren(vNode, el)
   }
 
-  const isEvent = (event:string)=> /^on[A-Z]/.test(event)
+  const isEvent = (event: string) => /^on[A-Z]/.test(event)
 
   for (const propsKey in props) {
     if (isEvent(propsKey)) {
