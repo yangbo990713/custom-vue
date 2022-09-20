@@ -9,7 +9,8 @@ export function createComponentInstance(vNode: any) {
     vNode,
     type: vNode.type,
     proxy: {},
-    emit: () => {}
+    emit: () => {
+    }
   }
   component.emit = emit.bind(null, component) as any
   return component
@@ -18,7 +19,7 @@ export function createComponentInstance(vNode: any) {
 export function setupComponent(instance: any) {
   initProps(instance, instance.vNode.props)
 
-  initSlots(instance,instance.vNode.children)
+  initSlots(instance, instance.vNode.children)
 
   setupStatefulComponent(instance)
 }
@@ -30,9 +31,12 @@ function setupStatefulComponent(instance: any) {
   instance.proxy = new Proxy({_: instance}, publicInstanceProxyHandlers)
 
   if (typeof setup === 'function') {
+    setCurrentInstance(instance)
     // setup可以返回对象(响应式数据)或函数(渲染函数)
     // setup时传递props,且props是“浅只读”的
     const setupResult = setup(shallowReadonly(instance.props), {emit: instance.emit})
+    setCurrentInstance(null)
+
     handleSetupResult(instance, setupResult)
   }
 }
@@ -51,4 +55,14 @@ function finishComponentSetup(instance: any) {
   if (Component.render) {
     instance.render = Component.render
   }
+}
+
+let currentInstance: null
+
+export function getCurrentInstance(): any {
+  return currentInstance
+}
+
+function setCurrentInstance(instance: any) {
+  currentInstance = instance
 }
