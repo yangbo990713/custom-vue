@@ -4,11 +4,16 @@ import {shallowReadonly} from "../reactive/readonly";
 import {emit} from "./componentEmit";
 import {initSlots} from "./componentSlots";
 
-export function createComponentInstance(vNode: any) {
+export function createComponentInstance(vNode: any, parent: any) {
+  console.log('Galaxy', parent)
   const component = {
     vNode,
     type: vNode.type,
-    proxy: {},
+    setupState: {},
+    props: {},
+    slots: {},
+    provides: parent ? parent.provides : {},
+    parent,
     emit: () => {
     }
   }
