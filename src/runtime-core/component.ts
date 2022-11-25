@@ -4,6 +4,11 @@ import {shallowReadonly} from "../reactive/readonly";
 import {emit} from "./componentEmit";
 import {initSlots} from "./componentSlots";
 
+/**
+ * 创建组件实例
+ * @param vNode 虚拟节点
+ * @param parent 父组件
+ */
 export function createComponentInstance(vNode: any, parent: any) {
   console.log('Galaxy', parent)
   const component = {
@@ -21,14 +26,23 @@ export function createComponentInstance(vNode: any, parent: any) {
   return component
 }
 
+/**
+ * 安装组件
+ * @param instance
+ */
 export function setupComponent(instance: any) {
+  // 初始化props
   initProps(instance, instance.vNode.props)
-
+  // 初始化插槽
   initSlots(instance, instance.vNode.children)
 
   setupStatefulComponent(instance)
 }
 
+/**
+ * 处理组件setup方法
+ * @param instance
+ */
 function setupStatefulComponent(instance: any) {
   const Component = instance.type
   const {setup} = Component
@@ -46,6 +60,11 @@ function setupStatefulComponent(instance: any) {
   }
 }
 
+/**
+ * 处理setup的返回
+ * @param instance
+ * @param setupResult
+ */
 function handleSetupResult(instance: any, setupResult: any) {
   // todo 处理setup返回渲染函数
   if (typeof setupResult === 'object') {
@@ -55,6 +74,10 @@ function handleSetupResult(instance: any, setupResult: any) {
   finishComponentSetup(instance)
 }
 
+/**
+ * 结束组件的setup调用
+ * @param instance
+ */
 function finishComponentSetup(instance: any) {
   const Component = instance.type
   if (Component.render) {
@@ -64,10 +87,17 @@ function finishComponentSetup(instance: any) {
 
 let currentInstance: null
 
+/**
+ * 查看当前组件实例
+ */
 export function getCurrentInstance(): any {
   return currentInstance
 }
 
+/**
+ * 设置当前组件实例
+ * @param instance
+ */
 function setCurrentInstance(instance: any) {
   currentInstance = instance
 }

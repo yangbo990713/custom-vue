@@ -14,6 +14,12 @@ export function render(vNode: any, container: any) {
   patch(vNode, container, null)
 }
 
+/**
+ * patch方法,处理各种节点
+ * @param vNode
+ * @param container
+ * @param parentComponent
+ */
 function patch(vNode: any, container: any, parentComponent: any) {
   const {shapeFlag, type} = vNode
   switch (type) {
@@ -35,21 +41,43 @@ function patch(vNode: any, container: any, parentComponent: any) {
   }
 }
 
+/**
+ * 处理 插槽 类型节点
+ * @param vNode
+ * @param container
+ * @param parentComponent
+ */
 function processFragment(vNode: any, container: any, parentComponent: any) {
   mountChildren(vNode, container, parentComponent)
 }
 
+/**
+ * 处理 文本 类型节点
+ * @param vNode
+ * @param container
+ */
 function processText(vNode: any, container: any) {
   const {children} = vNode
   const textNode = vNode.el = document.createTextNode(children)
   container.append(textNode)
 }
 
-
+/**
+ * 处理 element 类型节点
+ * @param vNode
+ * @param container
+ * @param parentComponent
+ */
 function processElement(vNode: any, container: any, parentComponent: any) {
   mountElement(vNode, container, parentComponent)
 }
 
+/**
+ * 挂载 element 类型节点
+ * @param vNode
+ * @param container
+ * @param parentComponent
+ */
 function mountElement(vNode: any, container: any, parentComponent: any) {
   const {props, children, type, shapeFlag} = vNode
   const el = vNode.el = document.createElement(type)
@@ -61,6 +89,7 @@ function mountElement(vNode: any, container: any, parentComponent: any) {
     mountChildren(vNode, el, parentComponent)
   }
 
+  // 是否为event 规律为on开头后面驼峰
   const isEvent = (event: string) => /^on[A-Z]/.test(event)
 
   for (const propsKey in props) {
@@ -74,20 +103,44 @@ function mountElement(vNode: any, container: any, parentComponent: any) {
   container.append(el)
 }
 
+/**
+ * 处理子节点
+ * @param vNode
+ * @param container
+ * @param parentComponent
+ */
 function mountChildren(vNode: any, container: any, parentComponent: any) {
   vNode.children.forEach((item: any) => patch(item, container, parentComponent))
 }
 
+/**
+ * 处理 组件 类型节点
+ * @param vNode
+ * @param container
+ * @param parentComponent
+ */
 function processComponent(vNode: any, container: any, parentComponent: any) {
   mountComponent(vNode, container, parentComponent)
 }
 
+/**
+ * 挂载 组件 类型节点
+ * @param initialVNode
+ * @param container
+ * @param parentComponent
+ */
 function mountComponent(initialVNode: any, container: any, parentComponent: any) {
   const instance = createComponentInstance(initialVNode, parentComponent)
   setupComponent(instance)
   setupRenderEffect(instance, initialVNode, container)
 }
 
+/**
+ * patch
+ * @param instance
+ * @param vNode
+ * @param container
+ */
 function setupRenderEffect(instance: any, vNode: any, container: any) {
   const subTree = instance.render.call(instance.proxy)
   patch(subTree, container, instance)

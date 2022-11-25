@@ -1,5 +1,10 @@
 import {ShapeFlags} from "../shared/ShapeFlags";
 
+/**
+ * 初始化插槽
+ * @param instance
+ * @param children
+ */
 export function initSlots(instance: any, children: any) {
   const {vNode} = instance
   if (vNode.shapeFlag & ShapeFlags.SLOT_CHILDREN) {

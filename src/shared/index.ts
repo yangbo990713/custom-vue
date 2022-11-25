@@ -3,6 +3,7 @@ export const extend = Object.assign
 // 查看val是否为对象
 export const isObject = (val: any) => val !== null && typeof val === 'object'
 
+// 判断一个值是否改变
 export const hasChanged = (val: any, newVal: any) => !Object.is(val, newVal)
 
 // 查看对象中是否有某个key

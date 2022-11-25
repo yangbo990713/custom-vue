@@ -1,5 +1,10 @@
 import {getCurrentInstance} from "./component";
 
+/**
+ * 向后代组件提供数据
+ * @param key
+ * @param value
+ */
 export function provide(key: string | symbol, value: any) {
   // 存
   const currentInstance: any = getCurrentInstance()
@@ -19,6 +24,11 @@ export function provide(key: string | symbol, value: any) {
   }
 }
 
+/**
+ * 注入祖先组件提供的数据
+ * @param key
+ * @param defaultVal
+ */
 export function inject(key: string | symbol, defaultVal: any) {
   // 取
   const currentInstance: any = getCurrentInstance()

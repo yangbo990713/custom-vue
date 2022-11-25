@@ -4,6 +4,9 @@ const publicPropertiesMap: any = {
   $el: (i: any) => i.vNode.el,
   $slots: (i: any) => i.slots,
 }
+/**
+ * 组件实例的handler 处理各种代理
+ */
 export const publicInstanceProxyHandlers = {
   get({_: instance}: any, key: string | symbol): any {
     const {setupState, props} = instance
