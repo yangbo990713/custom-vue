@@ -1,5 +1,5 @@
 // 当前的更新函数
-import {extend} from "../shared/index";
+import {extend} from "../shared";
 
 let activeEffect: ReactiveEffect
 let shouldTrack: Boolean
@@ -44,6 +44,7 @@ export function effect(fn: Function, options: any = {}) {
   extend(_effect, options)
   // 立刻执行一次
   _effect.run()
+  // effect返回的runner函数需要处理this指向问题，需要把this绑定到 ReactiveEffect 实例对象上
   const runner: any = _effect.run.bind(_effect)
   runner._effect = _effect
   return runner
