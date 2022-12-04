@@ -45,7 +45,7 @@
 
 ### runtime-core
 
-- [ ] 支持 createRender 自定义渲染器
+- [x] 支持 createRender 自定义渲染器
 
 ### compiler-core
 
