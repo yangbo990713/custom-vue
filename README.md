@@ -43,6 +43,10 @@
 - [ ]  支持 $el api
 - [x]  支持 watchEffect
 
+### runtime-core
+
+- [ ] 支持 createRender 自定义渲染器
+
 ### compiler-core
 
 - [ ]  解析插值

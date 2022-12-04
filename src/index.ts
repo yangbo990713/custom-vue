@@ -1,1 +1,2 @@
-export * from './runtime-core/index'
+// 总的出口文件
+export * from './runtime-dom'

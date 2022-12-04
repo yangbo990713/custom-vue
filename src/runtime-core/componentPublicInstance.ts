@@ -1,4 +1,4 @@
-import {hasOwn} from "../shared/index";
+import {hasOwn} from "../shared";
 
 const publicPropertiesMap: any = {
   $el: (i: any) => i.vNode.el,
